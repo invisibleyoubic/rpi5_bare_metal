@@ -1,0 +1,7 @@
+.zig-cache/*
+build/*
+*.img
+*.bin
+*.elf
+
+trash/*
