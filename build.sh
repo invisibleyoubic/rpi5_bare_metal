@@ -11,6 +11,7 @@ zig build-exe \
     -O ReleaseSmall \
     -T src/linker.ld \
     --name kernel_2712.elf \
+    -mcpu cortex_a76 \
     -fno-unwind-tables \
     -fno-stack-protector \
     -fstrip \
