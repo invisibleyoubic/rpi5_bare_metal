@@ -1,5 +1,5 @@
 .zig-cache/*
-build/*
+zig-out/*
 *.img
 *.bin
 *.elf

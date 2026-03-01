@@ -27,12 +27,12 @@ On Raspberry Pi 5, the UART0 physical address might vary. You have to check uart
 
 ## Roadmap
 
-1. Implement stack pointer initialization to handle arrays, strings, and function calls
-2. Migrate current build script to a native build.zig
-3. Implement justfile to automate building and deployment to the SD card
-4. Implement a workflow to upload the kernel without physical SD-card removal:
+1. [x] Implement stack pointer initialization to handle arrays, strings, and function calls
+2. [x] Migrate current build script to a native build.zig
+3. [ ] Implement justfile to automate building and deployment to the SD card
+4. [ ] Implement a workflow to upload the kernel without physical SD-card removal:
     - Network Boot (TFTP)
     - Serial Bootloader
-5. Implement a UART driver that supports reading input for a basic interactive shell
-6. Implement branching logic to read and output system information
-7. Implement a video driver and integrate a small display
+5. [ ] Implement a UART driver that supports reading input for a basic interactive shell
+6. [ ] Implement branching logic to read and output system information
+7. [ ] Implement a video driver and integrate a small display
