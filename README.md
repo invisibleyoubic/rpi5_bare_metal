@@ -2,9 +2,28 @@
 
 I just want to learn bare metal Raspberry Pi 5 programming and Zig
 
+
 # Some notes for myself
 
 I'll try to maintain this document for myself
+
+## Prerequisites
+
+I'm using Arch Linux
+
+### Software
+
+* zig
+* just
+* aarch64-linux-gnu-binutils
+* util-linux
+* minicom
+
+### Hardware
+
+* Raspberry Pi5
+* MicroSD card
+* USB-to-UART adapter
 
 ## About config.txt
 
@@ -29,7 +48,7 @@ On Raspberry Pi 5, the UART0 physical address might vary. You have to check uart
 
 1. [x] Implement stack pointer initialization to handle arrays, strings, and function calls
 2. [x] Migrate current build script to a native build.zig
-3. [ ] Implement justfile to automate building and deployment to the SD card
+3. [x] Implement justfile to automate building and deployment to the SD card
 4. [ ] Implement a workflow to upload the kernel without physical SD-card removal:
     - Network Boot (TFTP)
     - Serial Bootloader
