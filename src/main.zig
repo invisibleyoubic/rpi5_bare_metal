@@ -16,6 +16,16 @@ export fn kmain() noreturn {
         uart.print_string(&stack_msg);
         uart.print_string("Direct message string\n\r");
 
+        uart.print_string("raw_address: ");
+        uart.print_address(@as(u64, 0x1c00030000));
+        uart.print_string("\n\rptr_address: ");
+        uart.print_address(@as(*u32, @ptrFromInt(0x1c00030000)));
+        uart.print_string("\n\r");
+
+        uart.print_string("decimal: ");
+        uart.print_dec(789456123);
+        uart.print_string("\n\r");
+
         var i: u32 = 0;
         while (i < 10_000_000) : (i += 1) {
             std.mem.doNotOptimizeAway(i);

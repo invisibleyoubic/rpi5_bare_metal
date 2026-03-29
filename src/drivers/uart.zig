@@ -89,10 +89,62 @@ pub const Uart = struct {
         self.get_register(DR).* = char;
     }
 
+    pub fn print_hex(self: Uart, number: u64) void {
+        const hex_chars = "0123456789ABCDEF";
+        var i: usize = 16;
+        while (i > 0) {
+            i -= 1;
+            const shift: u6 = @intCast(i * 4);
+            const digit = (number >> shift) & 0xF;
+            self.print_char(hex_chars[digit]);
+        }
+    }
+
+    pub fn print_dec(self: Uart, number: u64) void {
+        if (0 == number) {
+            self.print_char('0');
+            return;
+        }
+
+        var string: [20]u8 = undefined;
+        var i: usize = 0;
+        var buffer = number;
+
+        while (buffer > 0) : (i += 1) {
+            string[i] = @intCast((buffer % 10) + '0');
+            buffer /= 10;
+        }
+
+        while (i > 0) {
+            i -= 1;
+            self.print_char(string[i]);
+        }
+    }
+
     pub fn print_string(self: Uart, str: []const u8) void {
         for (str) |char| {
             self.print_char(char);
         }
+    }
+
+    pub fn print_address(self: Uart, address: anytype) void {
+        var buffer: u64 = 0;
+
+        const T = @TypeOf(address);
+        switch (@typeInfo(T)) {
+            .pointer => {
+                buffer = @intFromPtr(address);
+            },
+            .int, .comptime_int => {
+                buffer = @intCast(address);
+            },
+            else => {
+                @compileError("Unsupported type for print_address: " ++ @typeName(T));
+            },
+        }
+
+        self.print_string("0x");
+        self.print_hex(buffer);
     }
 
     fn get_register(self: Uart, offset: usize) *volatile u32 {
