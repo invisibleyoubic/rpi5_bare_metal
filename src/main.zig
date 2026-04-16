@@ -1,4 +1,5 @@
 const std = @import("std");
+const config = @import("config");
 const drivers = @import("drivers/drivers.zig");
 
 pub fn panic(_: []const u8, _: ?*std.builtin.StackTrace, _: ?usize) noreturn {
@@ -8,10 +9,19 @@ pub fn panic(_: []const u8, _: ?*std.builtin.StackTrace, _: ?usize) noreturn {
 }
 
 export fn kmain() noreturn {
+    const UART_BASE = if (config.is_qemu) 0x09000000 else 0x1c00030000;
+    if (config.is_qemu) {
+        const uart_ptr = @as(*volatile u32, @ptrFromInt(0x09000000));
+        uart_ptr.* = '!';
+        uart_ptr.* = '\n';
+        uart_ptr.* = '\r';
+    }
+
     var stack_msg = [_]u8{ 's', 't', 'a', 'c', 'k', '\r', '\n' };
     _ = &stack_msg;
 
-    const uart = drivers.Uart.init(0x1c00030000);
+    const uart = drivers.Uart.init(UART_BASE);
+
     while (true) {
         uart.print_string(&stack_msg);
         uart.print_string("Direct message string\n\r");

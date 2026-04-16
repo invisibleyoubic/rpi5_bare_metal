@@ -5,6 +5,11 @@ build jobs="4":
     @echo "====================="
     @echo "BUILT SUCCESSFULLY"
 
+build-qemu jobs="4":
+    zig build -Dis_qemu=true -j{{jobs}}
+    @echo "====================="
+    @echo "BUILT SUCCESSFULLY"
+
 clean:
     rm -rf zig-out .zig-cache
 
@@ -38,3 +43,9 @@ upload-usb-full partition="":
 
 terminal device="/dev/ttyUSB0" speed="115200":
     sudo minicom -D {{device}} -b {{speed}}
+
+qemu:
+    qemu-system-aarch64 -kernel zig-out/bin/kernel_2712-qemu.elf -cpu cortex-a76 -machine virt -nographic
+
+qemu-debug:
+    qemu-system-aarch64 -kernel zig-out/bin/kernel_2712-qemu.elf -cpu cortex-a76 -machine virt -nographic -s -S
