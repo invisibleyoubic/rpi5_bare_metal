@@ -23,21 +23,21 @@ _copy-usb:
 upload-usb partition="":
     @test -n "{{partition}}" || (echo "ERROR: empty partition"; exit 1)
     @mkdir -p {{mount_point}}
-    @sudo mount {{partition}}1 /mnt/rpi_boot
+    @sudo mount {{partition}} {{mount_point}}
     @just _copy-usb
     @sudo sync
-    @sudo umount {{partition}}1
+    @sudo umount {{partition}}
     @echo "====================="
     @echo "UPLOADED SUCCESSFULLY"
 
 upload-usb-full partition="":
     @test -n "{{partition}}" || (echo "ERROR: empty partition"; exit 1)
     @mkdir -p {{mount_point}}
-    @sudo mount {{partition}}1 {{mount_point}}
+    @sudo mount {{partition}} {{mount_point}}
     @just _copy-usb
     sudo cp artifacts/bcm2712-rpi-5-b.dtb   {{mount_point}}/bcm2712-rpi-5-b.dtb
     @sudo sync
-    @sudo umount {{partition}}1
+    @sudo umount {{partition}}
     @echo "====================="
     @echo "UPLOADED SUCCESSFULLY"
 
@@ -49,3 +49,6 @@ qemu:
 
 qemu-debug:
     qemu-system-aarch64 -kernel zig-out/bin/kernel_2712-qemu.elf -cpu cortex-a76 -machine virt -nographic -s -S
+
+debug:
+    @gdb -ex "target remote :1234" -ex "break kmain" -ex "c" -ex "tui reg general" zig-out/bin/kernel_2712-qemu.elf

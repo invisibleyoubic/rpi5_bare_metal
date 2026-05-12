@@ -13,7 +13,7 @@ I'm using Arch Linux
 
 ### Software
 
-* zig
+* zig 0.16.0
 * just
 * aarch64-linux-gnu-binutils
 * util-linux
@@ -55,3 +55,4 @@ On Raspberry Pi 5, the UART0 physical address might vary. You have to check uart
 5. [ ] Implement a UART driver that supports reading input for a basic interactive shell
 6. [ ] Implement branching logic to read and output system information
 7. [ ] Implement a video driver and integrate a small display
+8. [x] Implement QEMU debug build

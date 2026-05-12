@@ -11,6 +11,12 @@ pub fn build(b: *std.Build) void {
     });
 
     const is_qemu = b.option(bool, "is_qemu", "Build for QEMU debug or RPI5") orelse false;
+    const ram_address = if (is_qemu) "0x40000000" else "0x80000";
+    const file_write = b.addWriteFiles();
+    const proxy_script = file_write.add("linker_proxy.ld", b.fmt(
+        "RAM_START = {s};\nINCLUDE \"src/linker.ld\"",
+        .{ram_address},
+    ));
 
     const binary_name = if (is_qemu) "kernel_2712-qemu" else "kernel_2712";
     const elf_name = b.fmt("{s}.elf", .{binary_name});
@@ -18,6 +24,7 @@ pub fn build(b: *std.Build) void {
 
     var options = b.addOptions();
     options.addOption(bool, "is_qemu", is_qemu);
+    const config_module = options.createModule();
 
     const elf = b.addExecutable(.{
         .name = elf_name,
@@ -35,10 +42,15 @@ pub fn build(b: *std.Build) void {
         }),
     });
 
-    elf.addAssemblyFile(b.path("src/arch/aarch64/boot.S"));
-    elf.setLinkerScript(b.path("src/linker.ld"));
-    elf.bundle_compiler_rt = is_qemu;
     elf.root_module.addOptions("config", options);
+    elf.root_module.addImport("config", config_module);
+    elf.root_module.addAssemblyFile(b.path("src/arch/aarch64/boot.S"));
+
+    elf.setLinkerScript(proxy_script);
+    elf.bundle_compiler_rt = is_qemu;
+
+    const check = b.step("check", "Check if your_executable compiles");
+    check.dependOn(&elf.step);
 
     const bin = elf.addObjCopy(.{ .format = .bin });
     const install_bin = b.addInstallBinFile(bin.getOutput(), img_name);

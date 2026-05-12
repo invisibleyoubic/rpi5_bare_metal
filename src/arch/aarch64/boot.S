@@ -11,8 +11,7 @@ _halt:
     b       _halt
 
 _setup_stack:
-    adrp    x0, _start
-    add     x0, x0, :lo12:_start
+    ldr     x0, =_stack_top
     mov     sp, x0
 
     adrp    x0, __bss_start
